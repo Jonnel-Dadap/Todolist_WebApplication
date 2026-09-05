@@ -30,7 +30,7 @@ const getTodos = async (req, res) => { // para sa get ng data inside mongodb
     }
 };
 
-const  getTodo = async (req, res) => {
+const  getTodo = async (req, res) => { // for get specific user
     try {
         const todo = await Todo.findById(req.params.id);
 
@@ -50,7 +50,7 @@ const  getTodo = async (req, res) => {
     
 };
 
-const updateTodo = async (req, res) => {
+const updateTodo = async (req, res) => { // change data inside database
   try {
     const todo = await Todo.findByIdAndUpdate(
         req.params.id,
@@ -70,7 +70,7 @@ const updateTodo = async (req, res) => {
     });
   }
 };
-const deleteTodo = async (req, res) => {
+const deleteTodo = async (req, res) => { // delete 
     try {
         const todo = await Todo.findByIdAndDelete(req.params.id);
         if(!todo){
