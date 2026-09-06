@@ -39,10 +39,15 @@ function Home() {
     }
   };
 
-  const deleteTodo = (indexToDelete) => {
-    setTodos(
-      todos.filter((_, index) => index !== indexToDelete)
-    );
+  const deleteTodo =  async (id) => {
+   try {
+    await fetch(`"http://localhost:5000/api/todos/${id}`, {
+      method: "DELETE",
+    });
+    setTodos(todos.filter((item) => item._id !== id));
+   } catch (error){
+    console.log("Error deleting Todo: ", error);
+   }
   };
 
   const editTodo = (index) => {
