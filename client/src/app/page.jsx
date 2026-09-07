@@ -87,249 +87,120 @@ function Home() {
   };
 
   return (
-  <main className="min-h-screen bg-[#d8d0bd] px-4 py-10 font-serif text-black">
-
-    {/* Main Newspaper */}
-    <div className="mx-auto max-w-3xl border-4 border-black bg-[#f3ecd9] px-6 py-8 shadow-[10px_10px_0px_#000]">
-
-      {/* Newspaper Header */}
-      <header className="border-b-4 border-black pb-5 text-center">
-
-        <p className="text-xs font-bold uppercase tracking-[0.35em]">
-          EST. 2026 • DAILY EDITION
-        </p>
-
-        <h1 className="mt-2 text-5xl font-black uppercase tracking-tight sm:text-6xl">
-          The Todo Post
-        </h1>
-
-        <div className="mt-3 flex items-center justify-between border-t-2 border-black pt-2 text-[10px] font-bold uppercase tracking-widest">
-          <span>Task Management</span>
-          <span>Vol. 01 • No. 01</span>
-          <span>Digital Edition</span>
-        </div>
-
-      </header>
-
-
-      {/* Headline */}
-      <section className="border-b-2 border-black py-6 text-center">
-
-        <p className="text-xs font-bold uppercase tracking-[0.25em]">
-          Today's Tasks
-        </p>
-
-        <h2 className="mt-2 text-3xl font-black uppercase sm:text-4xl">
-          Get Things Done.
-        </h2>
-
-        <p className="mx-auto mt-2 max-w-xl text-sm italic">
-          A simple task manager for keeping track of what matters.
-        </p>
-
-      </section>
-
-
-      {/* New Task */}
-      <section className="border-b-2 border-black py-6">
-
+  <main className="min-h-screen bg-black px-4 py-12 font-sans text-white antialiased selection:bg-white selection:text-black">
+    {/* Main Container */}
+    <div className="mx-auto max-w-2xl rounded-3xl border border-white/10 bg-zinc-950 p-6 shadow-2xl backdrop-blur-xl sm:p-10">
+      
+      {/* Header */}
+      <header className="mb-10 border-b border-white/10 pb-6">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-xl font-black uppercase">
-            New Task
-          </h3>
-
-          <span className="text-xs font-bold uppercase">
-            Write it down.
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium tracking-wide text-zinc-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+            WORKSPACE
+          </span>
+          <span className="text-xs font-medium text-zinc-500">
+            {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+          Tasks
+        </h1>
+        <p className="mt-1 text-sm text-zinc-400">
+          Focus on what matters today.
+        </p>
+      </header>
 
+      {/* New Task Input */}
+      <section className="mb-8">
+        <label className="mb-2 block text-xs font-medium tracking-wider text-zinc-400 uppercase">
+          {editingId === null ? "New Task" : "Edit Task"}
+        </label>
+
+        <div className="flex flex-col gap-2.5 sm:flex-row">
           <input
             type="text"
-            placeholder="Enter a new task..."
+            placeholder="What needs to be done?"
             value={todo}
             onChange={(e) => setTodo(e.target.value)}
-            className="
-              flex-1
-              border-2 border-black
-              bg-[#fffaf0]
-              px-4 py-3
-              font-sans
-              text-sm
-              font-bold
-              outline-none
-              placeholder:text-gray-500
-              focus:bg-white
-            "
+            className="flex-1 rounded-xl border border-white/10 bg-zinc-900/80 px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none transition-all duration-200 focus:border-white focus:bg-zinc-900 focus:ring-1 focus:ring-white"
           />
 
           <button
             onClick={editingId === null ? addTodo : updateTodo}
-            className="
-              border-2 border-black
-              bg-black
-              px-7 py-3
-              font-sans
-              text-sm
-              font-black
-              uppercase
-              tracking-wider
-              text-white
-              transition-all
-              hover:bg-white
-              hover:text-black
-            "
+            className="rounded-xl bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-200 hover:bg-zinc-200 active:scale-95 shrink-0"
           >
             {editingId === null ? "Add Task" : "Save Task"}
           </button>
-
         </div>
-
       </section>
 
-
       {/* Task List */}
-      <section className="py-6">
-
-        <div className="mb-4 flex items-end justify-between border-b-4 border-black pb-2">
-
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest">
-              Classified
-            </p>
-
-            <h3 className="text-3xl font-black uppercase">
-              Task List
-            </h3>
-          </div>
-
-          <p className="text-xs font-bold uppercase">
-            Total: {todos.length}
-          </p>
-
+      <section className="mb-8">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            Overview
+          </h2>
+          <span className="rounded-full border border-white/10 bg-zinc-900 px-2.5 py-0.5 text-xs text-zinc-300">
+            {todos.length} {todos.length === 1 ? 'task' : 'tasks'}
+          </span>
         </div>
 
-
-        {/* Todos */}
-        <ul>
-
+        {/* List Items */}
+        <ul className="flex flex-col gap-2">
           {todos.map((item, index) => (
             <li
               key={item._id}
-              className="
-                border-b-2
-                border-black
-                py-4
-              "
+              className="group flex flex-col justify-between gap-3 rounded-2xl border border-white/5 bg-zinc-900/40 p-4 transition-all duration-200 hover:border-white/20 hover:bg-zinc-900/80 sm:flex-row sm:items-center"
             >
-
-              <div className="flex items-start justify-between gap-4">
-
-                {/* Number + Title */}
-                <div className="flex min-w-0 gap-4">
-
-                  <span className="text-xl font-black">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-
-                  <span className="break-words text-lg font-bold">
-                    {item.title}
-                  </span>
-
-                </div>
-
-
-                {/* Buttons */}
-                <div className="flex shrink-0 gap-2">
-
-                  <button
-                    onClick={() => editTodo(item)}
-                    className="
-                      border-2 border-black
-                      px-3 py-1
-                      font-sans
-                      text-xs
-                      font-black
-                      uppercase
-                      transition-all
-                      hover:bg-black
-                      hover:text-white
-                    "
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    onClick={() => deleteTodo(item._id)}
-                    className="
-                      border-2 border-black
-                      bg-black
-                      px-3 py-1
-                      font-sans
-                      text-xs
-                      font-black
-                      uppercase
-                      text-white
-                      transition-all
-                      hover:bg-white
-                      hover:text-black
-                    "
-                  >
-                    Delete
-                  </button>
-
-                </div>
-
+              <div className="flex items-center gap-3.5 min-w-0">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white/10 text-[11px] font-mono text-zinc-400">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="break-words text-sm font-medium text-zinc-200 group-hover:text-white">
+                  {item.title}
+                </span>
               </div>
 
+              {/* Action Buttons */}
+              <div className="flex shrink-0 items-center gap-2 self-end sm:self-auto">
+                <button
+                  onClick={() => editTodo(item)}
+                  className="rounded-lg border border-white/10 bg-transparent px-3 py-1.5 text-xs font-medium text-zinc-300 transition-all duration-200 hover:border-white/30 hover:bg-white/5 hover:text-white active:scale-95"
+                >
+                  Edit
+                </button>
+
+                <button
+                  onClick={() => deleteTodo(item._id)}
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-zinc-400 transition-all duration-200 hover:border-white/20 hover:bg-white hover:text-black active:scale-95"
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
-
         </ul>
-
 
         {/* Empty State */}
         {todos.length === 0 && (
-          <div className="border-2 border-dashed border-black py-12 text-center">
-
-            <p className="text-2xl font-black uppercase">
-              No Tasks Found
+          <div className="rounded-2xl border border-dashed border-white/10 bg-zinc-900/20 py-12 text-center">
+            <p className="text-sm font-medium text-zinc-300">
+              No tasks for today
             </p>
-
-            <p className="mt-2 text-sm italic">
-              Your task list is currently empty.
+            <p className="mt-1 text-xs text-zinc-500">
+              Add a new task above to get started.
             </p>
-
           </div>
         )}
-
       </section>
 
-
-      {/* Newspaper Footer */}
-      <footer className="border-t-4 border-black pt-4">
-
-        <div className="flex flex-col justify-between gap-2 text-xs font-bold uppercase sm:flex-row">
-
-          <span>
-            The Todo Post
-          </span>
-
-          <span>
-            {todos.length} Tasks • Database Connected
-          </span>
-
-          <span>
-            © 2026
-          </span>
-
-        </div>
-
+      {/* Footer */}
+      <footer className="border-t border-white/10 pt-4 text-center text-xs text-zinc-500">
+        Minimal Task Manager • {todos.length} items remaining
       </footer>
 
     </div>
-
   </main>
 );
 }
