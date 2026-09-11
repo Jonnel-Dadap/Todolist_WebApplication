@@ -1,3 +1,7 @@
+require("dotenv").config();
+console.log("JWT SECRET LOADED:", process.env.JWT_SECRET);
+console.log("Current folder:", process.cwd());
+
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/conn");
