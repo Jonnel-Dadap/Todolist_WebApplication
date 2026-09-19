@@ -30,7 +30,7 @@ function Features() {
           </h3>
 
           <p className="mt-3">
-            Keep track of your completed and u nfinished tasks.
+            Keep track of your completed and unfinished tasks.
           </p>
         </div>
 
