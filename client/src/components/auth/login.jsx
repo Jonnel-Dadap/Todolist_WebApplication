@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
@@ -36,8 +38,9 @@ export default function Login() {
             }
 
             setMessage(data.message);
+            localStorage.setItem("token", data.token);
 
-            console.log("JWT Token:", data.token);
+            router.push("/todo")
 
         } catch (error) {
             setError("Something went wrong. Please try again.");
