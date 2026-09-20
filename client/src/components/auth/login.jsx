@@ -5,12 +5,43 @@ import { useState } from "react";
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
-    const handleSubmit = (e) => {
+    const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log("Email:", email);
-        console.log("Password:", password);
+        setMessage("");
+        setError("");
+
+        try {
+            const response = await fetch(
+                "http://localhost:5000/api/auth/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.message);
+                return;
+            }
+
+            setMessage(data.message);
+
+            console.log("JWT Token:", data.token);
+
+        } catch (error) {
+            setError("Something went wrong. Please try again.");
+        }
     };
 
     return (
@@ -61,7 +92,20 @@ export default function Login() {
                             required
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:border-black"
                         />
+
                     </div>
+                    {message && (
+                        <p className="text-sm text-green-600 text-center">
+                            {message}
+                        </p>
+                    )}
+
+                    {error && (
+                        <p className="text-sm text-red-600 text-center">
+                            {error}
+                        </p>
+                    )}
+
 
                     {/* Submit */}
                     <button
@@ -72,6 +116,7 @@ export default function Login() {
                     </button>
 
                 </form>
+
 
                 {/* Register Link */}
                 <p className="mt-6 text-center text-sm text-gray-500">
