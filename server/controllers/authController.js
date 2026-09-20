@@ -25,8 +25,15 @@ const registerUser = async (req, res) => {
       password: hashedPassword
     });
 
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
     res.status(201).json({
       message: "User registered successfully",
+      token,
       user: {
         id: user._id,
         username: user.username,
@@ -40,10 +47,10 @@ const registerUser = async (req, res) => {
     });
   }
 };
- 
+
 const loginUser = async (req, res) => {
   try {
-    console.log("LOGIN REQUEST RECEIVED");
+    // console.log("LOGIN REQUEST RECEIVED");
 
     const { email, password } = req.body;
 
@@ -59,7 +66,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    console.log("Checking password...");
+    // console.log("Checking password...");
 
     const isPasswordCorrect = await bcrypt.compare(
       password,
@@ -74,7 +81,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    console.log("Creating JWT...");
+    // console.log("Creating JWT...");
 
     const token = jwt.sign(
       { userId: user._id },
@@ -82,7 +89,7 @@ const loginUser = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    console.log("JWT CREATED");
+    // console.log("JWT CREATED");
 
     res.status(200).json({
       message: "Login successful",

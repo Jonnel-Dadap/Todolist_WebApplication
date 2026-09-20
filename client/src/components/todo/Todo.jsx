@@ -8,21 +8,26 @@ function Todo() {
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-    fetch("http://localhost:5000/api/todos", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  if (!token) { // validation if user have a valid JWT 
+    router.push("/login");
+    return;
+  }
+
+  fetch("http://localhost:5000/api/todos", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      setTodos(data);
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setTodos(data);
-      })
-      .catch((error) => {
-        console.log("Error fetching: ", error);
-      });
-  }, []);
+    .catch((error) => {
+      console.log("Error fetching: ", error);
+    });
+}, []);
 
 
   const addTodo = async () => {
