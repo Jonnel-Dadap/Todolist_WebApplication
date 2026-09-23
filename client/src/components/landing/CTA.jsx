@@ -1,3 +1,4 @@
+import Image from "next/image";
 function CTA() {
   return (
     <section
@@ -15,9 +16,13 @@ function CTA() {
           {/* Content */}
           <div className="relative z-10 mx-auto max-w-2xl">
 
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white/15 text-xl font-bold text-white">
-              T
-            </div>
+            <Image
+              src="/todolist logo.png"
+              alt="Todo Post Logo"
+              width={80}
+              height={80}
+              className="mx-auto h-16 w-16 rounded-xl object-contain"
+            />
 
             <h2 className="mt-6 text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Ready to Get Organized?

@@ -1,3 +1,5 @@
+
+import Image from "next/image"; 
 function Footer() {
   return (
     <footer className="border-t border-gray-800 bg-gray-950 px-6 py-10 lg:px-8">
@@ -9,7 +11,13 @@ function Footer() {
           <div className="flex items-center gap-2">
 
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#A0AC00] text-sm font-bold text-white">
-              T
+           <Image
+                         src="/todolist logo.png"
+                         alt="Todo Post Logo"
+                         width={80}
+                         height={80}
+                         className="mx-auto h-16 w-16 rounded-xl object-contain"
+                       />
             </div>
 
             <span className="text-sm font-semibold text-white">

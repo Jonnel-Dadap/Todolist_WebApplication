@@ -1,14 +1,17 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
     const router = useRouter();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -38,9 +41,10 @@ export default function Login() {
             }
 
             setMessage(data.message);
+
             localStorage.setItem("token", data.token);
 
-            router.push("/todo")
+            router.push("/todo");
 
         } catch (error) {
             setError("Something went wrong. Please try again.");
@@ -48,91 +52,151 @@ export default function Login() {
     };
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-            <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+        <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F5F6EE] px-6 py-12">
 
-                {/* Header */}
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">
-                        Welcome Back
-                    </h1>
+            {/* Background Decorations */}
+            <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-[#A0AC00]/10 blur-3xl" />
 
-                    <p className="mt-2 text-gray-500">
-                        Sign in to continue
+            <div className="absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-[#A0AC00]/10 blur-3xl" />
+
+
+            {/* Login Content */}
+            <div className="relative z-10 w-full max-w-md">
+
+                {/* Login Card */}
+                <div className="login-card rounded-2xl border border-gray-200/80 bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] sm:p-10">
+
+                    {/* Logo */}
+                    {/* Logo */}
+                    <div className="mb-5 flex justify-center">
+                        <div className="mb-2 flex justify-center">
+                            <Image
+                                src="/todolist logo.png"
+                                alt="Todo Post Logo"
+                                width={120}
+                                height={120}
+                                className="login-logo h-20 w-20 rounded-full object-cover"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Header */}
+                    <div className="mb-8 text-center">
+
+                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                            Welcome Back
+                        </h1>
+
+                        <p className="mt-2 text-sm text-gray-500">
+                            Sign in to continue to Todo Post
+                        </p>
+
+                    </div>
+
+
+                    {/* Login Form */}
+                    <form onSubmit={handleSubmit} className="space-y-5">
+
+                        {/* Email */}
+                        <div>
+
+                            <label className="mb-2 block text-sm font-medium text-gray-700">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#A0AC00] focus:ring-2 focus:ring-[#A0AC00]/10"
+                            />
+
+                        </div>
+
+
+                        {/* Password */}
+                        <div>
+
+                            <label className="mb-2 block text-sm font-medium text-gray-700">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#A0AC00] focus:ring-2 focus:ring-[#A0AC00]/10"
+                            />
+
+                        </div>
+
+
+                        {/* Error Message */}
+                        {error && (
+                            <div className="rounded-lg border border-red-100 bg-red-50 px-4 py-3">
+                                <p className="text-center text-sm text-red-600">
+                                    {error}
+                                </p>
+                            </div>
+                        )}
+
+
+                        {/* Success Message */}
+                        {message && (
+                            <div className="rounded-lg border border-green-100 bg-green-50 px-4 py-3">
+                                <p className="text-center text-sm text-green-600">
+                                    {message}
+                                </p>
+                            </div>
+                        )}
+
+
+                        {/* Submit */}
+                        <button
+                            type="submit"
+                            className="w-full rounded-lg bg-[#A0AC00] py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#B0BF1A] hover:shadow-md active:scale-[0.98]"
+                        >
+                            Sign In
+                        </button>
+
+                    </form>
+
+
+                    {/* Register Link */}
+                    <p className="mt-7 text-center text-sm text-gray-500">
+
+                        Don't have an account?{" "}
+
+                        <a
+                            href="/register"
+                            className="font-semibold text-[#8A9500] transition hover:text-[#A0AC00] hover:underline"
+                        >
+                            Create one
+                        </a>
+
                     </p>
+
                 </div>
 
-                {/* Login Form */}
-                <form onSubmit={handleSubmit} className="space-y-5">
 
-                    {/* Email */}
-                    <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
-                            Email
-                        </label>
+                {/* Back to Home */}
+                <div className="mt-6 text-center">
 
-                        <input
-                            type="email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:border-black"
-                        />
-                    </div>
-
-                    {/* Password */}
-                    <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-700">
-                            Password
-                        </label>
-
-                        <input
-                            type="password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:border-black"
-                        />
-
-                    </div>
-                    {message && (
-                        <p className="text-sm text-green-600 text-center">
-                            {message}
-                        </p>
-                    )}
-
-                    {error && (
-                        <p className="text-sm text-red-600 text-center">
-                            {error}
-                        </p>
-                    )}
-
-
-                    {/* Submit */}
-                    <button
-                        type="submit"
-                        className="w-full py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition"
-                    >
-                        Sign In
-                    </button>
-
-                </form>
-
-
-                {/* Register Link */}
-                <p className="mt-6 text-center text-sm text-gray-500">
-                    Don't have an account?{" "}
                     <a
-                        href="/register"
-                        className="font-medium text-black hover:underline"
+                        href="/"
+                        className="text-sm text-gray-400 transition hover:text-gray-700"
                     >
-                        Create one
+                        ← Back to home
                     </a>
-                </p>
+
+                </div>
 
             </div>
+
         </main>
     );
 }
