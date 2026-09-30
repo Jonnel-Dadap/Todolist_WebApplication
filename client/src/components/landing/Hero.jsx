@@ -37,9 +37,9 @@ export default function Hero() {
           </div>
 
           <h1 className="max-w-2xl text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:text-7xl">
-            Get Things
+            Simple Task Management
             <span className="block text-[#A0AC00]">
-              Done.
+              That Keeps You Focused.
             </span>
           </h1>
 
