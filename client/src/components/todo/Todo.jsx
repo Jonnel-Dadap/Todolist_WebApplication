@@ -33,7 +33,6 @@ function Todo() {
         console.log("Error fetching: ", error);
       });
   }, [router]);
-
   const addTodo = async () => {
     if (todo.trim() === "") return;
 
@@ -75,7 +74,6 @@ function Todo() {
           },
         }
       );
-
       if (response.ok) {
         setTodos((currentTodos) =>
           currentTodos.filter((item) => item._id !== id)
