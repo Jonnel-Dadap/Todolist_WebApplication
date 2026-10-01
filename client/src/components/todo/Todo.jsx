@@ -11,6 +11,7 @@ function Todo() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -341,13 +342,11 @@ function Todo() {
 
             </div>
 
-            {/* Add / Edit Task */}
+            {/* Add Today's Task */}
             <div className="mb-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
 
               <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                {editingId === null
-                  ? "Add today&apos;s task"
-                  : "Edit task"}
+                Add today&apos;s task
               </label>
 
               <div className="flex flex-col gap-3 sm:flex-row">
@@ -359,40 +358,20 @@ function Todo() {
                   onChange={(e) => setTodo(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      editingId === null
-                        ? addTodo()
-                        : updateTodo();
+                      addTodo();
                     }
                   }}
                   className="min-w-0 flex-1 rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#A0AC00] focus:ring-2 focus:ring-[#A0AC00]/10"
                 />
 
                 <button
-                  onClick={
-                    editingId === null
-                      ? addTodo
-                      : updateTodo
-                  }
+                  onClick={addTodo}
                   className="rounded-lg bg-[#A0AC00] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#B0BF1B] hover:shadow-md active:scale-95"
                 >
-                  {editingId === null
-                    ? "Add Task"
-                    : "Save Changes"}
+                  Add Task
                 </button>
 
               </div>
-
-              {editingId !== null && (
-                <button
-                  onClick={() => {
-                    setEditingId(null);
-                    setTodo("");
-                  }}
-                  className="mt-3 text-xs font-medium text-gray-400 transition hover:text-gray-700"
-                >
-                  Cancel editing
-                </button>
-              )}
 
             </div>
 
@@ -416,11 +395,10 @@ function Todo() {
                           ? "Mark task as incomplete"
                           : "Mark task as complete"
                       }
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition ${
-                        item.completed
-                          ? "border-[#A0AC00] bg-[#A0AC00] text-white"
-                          : "border-gray-300 bg-white hover:border-[#A0AC00]"
-                      }`}
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition ${item.completed
+                        ? "border-[#A0AC00] bg-[#A0AC00] text-white"
+                        : "border-gray-300 bg-white hover:border-[#A0AC00]"
+                        }`}
                     >
                       {item.completed && (
                         <span className="text-xs font-bold">
@@ -436,11 +414,10 @@ function Todo() {
 
                     {/* Title */}
                     <span
-                      className={`break-words text-sm transition ${
-                        item.completed
-                          ? "text-gray-400 line-through"
-                          : "text-gray-700 group-hover:text-gray-900"
-                      }`}
+                      className={`break-words text-sm transition ${item.completed
+                        ? "text-gray-400 line-through"
+                        : "text-gray-700 group-hover:text-gray-900"
+                        }`}
                     >
                       {item.title}
                     </span>
@@ -460,7 +437,7 @@ function Todo() {
                     </button>
 
                     <button
-                      onClick={() => deleteTodo(item._id)}
+                      onClick={() => setDeleteId(item._id)}
                       aria-label="Delete task"
                       title="Delete task"
                       className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 active:scale-95"
@@ -612,6 +589,140 @@ function Todo() {
         </footer>
 
       </div>
+      {/* Edit Task Modal */}
+      {editingId !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 px-4 backdrop-blur-sm">
+
+          <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-xl">
+
+            {/* Modal Header */}
+            <div className="mb-5 flex items-start justify-between gap-4">
+
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-[#8A9500]">
+                  Edit Task
+                </p>
+
+                <h3 className="mt-1 text-xl font-semibold text-gray-900">
+                  Update your task
+                </h3>
+              </div>
+
+              <button
+                onClick={() => {
+                  setEditingId(null);
+                  setTodo("");
+                }}
+                aria-label="Close edit modal"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+              >
+                ×
+              </button>
+
+            </div>
+
+            {/* Input */}
+            <div>
+              <label className="mb-2 block text-xs font-medium text-gray-500">
+                Task
+              </label>
+
+              <input
+                type="text"
+                autoFocus
+                value={todo}
+                onChange={(e) => setTodo(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    updateTodo();
+                  }
+
+                  if (e.key === "Escape") {
+                    setEditingId(null);
+                    setTodo("");
+                  }
+                }}
+                className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#A0AC00] focus:ring-2 focus:ring-[#A0AC00]/10"
+              />
+            </div>
+
+            {/* Actions */}
+            <div className="mt-6 flex justify-end gap-3">
+
+              <button
+                onClick={() => {
+                  setEditingId(null);
+                  setTodo("");
+                }}
+                className="rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 hover:text-gray-900 active:scale-95"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={updateTodo}
+                className="rounded-lg bg-[#A0AC00] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#B0BF1B] hover:shadow-md active:scale-95"
+              >
+                Save Changes
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {deleteId !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 px-4 backdrop-blur-sm">
+
+          <div className="w-full max-w-sm rounded-2xl border border-gray-200 bg-white p-6 shadow-xl">
+
+            {/* Modal Header */}
+            <div className="flex items-start gap-4">
+
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600">
+                <Trash2 size={18} />
+              </div>
+
+              <div className="min-w-0">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Delete task?
+                </h3>
+
+                <p className="mt-1 text-sm leading-5 text-gray-500">
+                  Are you sure you want to delete this task? This action cannot be undone.
+                </p>
+              </div>
+
+            </div>
+
+            {/* Actions */}
+            <div className="mt-6 flex justify-end gap-3">
+
+              <button
+                onClick={() => setDeleteId(null)}
+                className="rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 hover:text-gray-900 active:scale-95"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={async () => {
+                  await deleteTodo(deleteId);
+                  setDeleteId(null);
+                }}
+                className="rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700 active:scale-95"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
     </main>
   );
 }
