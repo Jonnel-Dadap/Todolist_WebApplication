@@ -33,6 +33,7 @@ function Todo() {
         console.log("Error fetching: ", error);
       });
   }, [router]);
+
   const addTodo = async () => {
     if (todo.trim() === "") return;
 
@@ -74,6 +75,7 @@ function Todo() {
           },
         }
       );
+
       if (response.ok) {
         setTodos((currentTodos) =>
           currentTodos.filter((item) => item._id !== id)
@@ -174,19 +176,22 @@ function Todo() {
       ? Math.round((completedCount / todos.length) * 100)
       : 0;
 
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
   return (
     <main className="min-h-screen bg-[#F5F6EE] px-4 py-8 text-gray-900 sm:px-6 lg:px-8">
-
       <div className="mx-auto max-w-6xl">
 
         {/* Header */}
-        <header className="mb-8 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm sm:px-6">
-
+        <header className="mb-10 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm sm:px-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-            {/* Brand */}
             <div className="flex items-center gap-3">
-
               <Image
                 src="/todolist logo.png"
                 alt="Todo Post Logo"
@@ -201,18 +206,15 @@ function Todo() {
                 </h1>
 
                 <p className="text-xs text-gray-400">
-                  Your personal task workspace
+                  Your daily task workspace
                 </p>
               </div>
-
             </div>
 
-            {/* Right Side */}
-            <div className="flex items-center gap-3">
-
-              <div className="hidden text-right sm:block">
-                <p className="text-xs font-medium text-gray-400">
-                  TODAY
+            <div className="flex items-center justify-between gap-4 sm:justify-end">
+              <div className="text-right">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                  Today
                 </p>
 
                 <p className="text-sm font-semibold text-gray-700">
@@ -230,67 +232,60 @@ function Todo() {
               >
                 Logout
               </button>
-
             </div>
 
           </div>
-
         </header>
 
-
-        {/* Welcome Section */}
+        {/* Welcome */}
         <section className="mb-8">
-
-          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
 
             <div>
-
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#A0AC00]/20 bg-[#A0AC00]/5 px-3 py-1.5">
-
-                <span className="h-2 w-2 animate-pulse rounded-full bg-[#A0AC00]" />
+                <span className="h-2 w-2 rounded-full bg-[#A0AC00]" />
 
                 <span className="text-xs font-semibold tracking-wide text-[#8A9500]">
-                  WORKSPACE
+                  TODAY
                 </span>
-
               </div>
 
               <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                My Tasks
+                Today&apos;s Focus
               </h2>
 
               <p className="mt-2 max-w-xl text-sm leading-6 text-gray-500 sm:text-base">
-                Organize your tasks, track your progress, and stay focused
-                on what matters today.
+                Focus on what you want to accomplish today, one task at a time.
               </p>
 
+              <p className="mt-3 text-sm font-medium text-gray-400">
+                {today}
+              </p>
             </div>
 
           </div>
-
         </section>
 
-
-        {/* Stats */}
+        {/* Daily Overview */}
         <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-          {/* Total */}
+          {/* Today */}
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-
             <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
-              Total Tasks
+              Today
             </p>
 
             <p className="mt-2 text-3xl font-bold text-gray-900">
               {todos.length}
             </p>
 
+            <p className="mt-1 text-xs text-gray-400">
+              {todos.length === 1 ? "task planned" : "tasks planned"}
+            </p>
           </div>
-
 
           {/* Completed */}
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-
             <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
               Completed
             </p>
@@ -299,12 +294,13 @@ function Todo() {
               {completedCount}
             </p>
 
+            <p className="mt-1 text-xs text-gray-400">
+              completed today
+            </p>
           </div>
-
 
           {/* Remaining */}
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-
             <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
               Remaining
             </p>
@@ -313,51 +309,52 @@ function Todo() {
               {remainingCount}
             </p>
 
+            <p className="mt-1 text-xs text-gray-400">
+              left for today
+            </p>
           </div>
 
         </section>
 
-
         {/* Main Dashboard */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
 
-
-          {/* Task Section */}
+          {/* Today's Tasks */}
           <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
 
             {/* Section Header */}
-            <div className="mb-5 flex items-center justify-between">
+            <div className="mb-5 flex items-center justify-between gap-4">
 
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Task List
+                  Today&apos;s Tasks
                 </h3>
 
                 <p className="mt-1 text-xs text-gray-400">
-                  Manage your daily tasks
+                  Complete what matters today.
                 </p>
               </div>
 
-              <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
-                {todos.length}{" "}
-                {todos.length === 1 ? "task" : "tasks"}
+              <span className="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
+                {completedCount}/{todos.length}
               </span>
 
             </div>
-
 
             {/* Add / Edit Task */}
             <div className="mb-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
 
               <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                {editingId === null ? "Add a new task" : "Edit task"}
+                {editingId === null
+                  ? "Add today&apos;s task"
+                  : "Edit task"}
               </label>
 
               <div className="flex flex-col gap-3 sm:flex-row">
 
                 <input
                   type="text"
-                  placeholder="What needs to be done?"
+                  placeholder="What do you want to accomplish today?"
                   value={todo}
                   onChange={(e) => setTodo(e.target.value)}
                   onKeyDown={(e) => {
@@ -399,12 +396,10 @@ function Todo() {
 
             </div>
 
-
             {/* Task List */}
             <div className="space-y-3">
 
               {todos.map((item, index) => (
-
                 <div
                   key={item._id}
                   className="group flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-4 transition duration-200 hover:border-[#A0AC00]/30 hover:shadow-sm sm:flex-row sm:items-center sm:justify-between"
@@ -421,10 +416,11 @@ function Todo() {
                           ? "Mark task as incomplete"
                           : "Mark task as complete"
                       }
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition ${item.completed
-                        ? "border-[#A0AC00] bg-[#A0AC00] text-white"
-                        : "border-gray-300 bg-white hover:border-[#A0AC00]"
-                        }`}
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition ${
+                        item.completed
+                          ? "border-[#A0AC00] bg-[#A0AC00] text-white"
+                          : "border-gray-300 bg-white hover:border-[#A0AC00]"
+                      }`}
                     >
                       {item.completed && (
                         <span className="text-xs font-bold">
@@ -433,25 +429,23 @@ function Todo() {
                       )}
                     </button>
 
-
                     {/* Number */}
                     <span className="hidden h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gray-50 text-xs font-medium text-gray-400 sm:flex">
                       {String(index + 1).padStart(2, "0")}
                     </span>
 
-
                     {/* Title */}
                     <span
-                      className={`break-words text-sm transition ${item.completed
-                        ? "text-gray-400 line-through"
-                        : "text-gray-700 group-hover:text-gray-900"
-                        }`}
+                      className={`break-words text-sm transition ${
+                        item.completed
+                          ? "text-gray-400 line-through"
+                          : "text-gray-700 group-hover:text-gray-900"
+                      }`}
                     >
                       {item.title}
                     </span>
 
                   </div>
-
 
                   {/* Actions */}
                   <div className="flex shrink-0 items-center gap-2 self-end sm:self-auto">
@@ -468,7 +462,8 @@ function Todo() {
                     <button
                       onClick={() => deleteTodo(item._id)}
                       aria-label="Delete task"
-                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                      title="Delete task"
+                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 active:scale-95"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -476,13 +471,10 @@ function Todo() {
                   </div>
 
                 </div>
-
               ))}
-
 
               {/* Empty State */}
               {todos.length === 0 && (
-
                 <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-6 py-12 text-center">
 
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-[#A0AC00]/10 text-xl font-bold text-[#8A9500]">
@@ -490,29 +482,27 @@ function Todo() {
                   </div>
 
                   <h4 className="mt-4 text-sm font-semibold text-gray-700">
-                    No tasks yet
+                    Nothing planned yet
                   </h4>
 
                   <p className="mt-1 text-xs text-gray-400">
-                    Add your first task above to get started.
+                    Add something you want to accomplish today.
                   </p>
 
                 </div>
-
               )}
 
             </div>
 
           </section>
 
-
-          {/* Progress Sidebar */}
+          {/* Today's Progress */}
           <aside className="h-fit rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
 
             <div className="mb-6">
 
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                Daily Progress
+                Today&apos;s Progress
               </p>
 
               <div className="mt-2 flex items-end justify-between">
@@ -529,7 +519,6 @@ function Todo() {
 
             </div>
 
-
             {/* Progress Bar */}
             <div className="h-2 overflow-hidden rounded-full bg-gray-100">
 
@@ -540,33 +529,31 @@ function Todo() {
 
             </div>
 
-
             {/* Progress Message */}
             <div className="mt-6 rounded-xl bg-[#A0AC00]/5 p-4">
 
               <p className="text-sm font-medium text-gray-700">
                 {todos.length === 0
-                  ? "Ready when you are."
+                  ? "Start your day with a clear task."
                   : progress === 100
-                    ? "All tasks completed!"
+                    ? "Everything planned for today is done."
                     : progress >= 50
-                      ? "You're making good progress."
+                      ? "You&apos;re making good progress today."
                       : "Keep going. One task at a time."}
               </p>
 
               <p className="mt-1 text-xs leading-5 text-gray-400">
-                Stay focused and keep your tasks moving forward.
+                Focus on today. Tomorrow will have its own tasks.
               </p>
 
             </div>
-
 
             {/* Summary */}
             <div className="mt-6 space-y-3 border-t border-gray-100 pt-5">
 
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400">
-                  Completed
+                  Completed today
                 </span>
 
                 <span className="font-medium text-gray-700">
@@ -576,7 +563,7 @@ function Todo() {
 
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400">
-                  Remaining
+                  Remaining today
                 </span>
 
                 <span className="font-medium text-gray-700">
@@ -590,18 +577,41 @@ function Todo() {
 
         </div>
 
+        {/* Future Daily History Placeholder */}
+        <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                Coming Next
+              </p>
+
+              <h3 className="mt-1 text-lg font-semibold text-gray-900">
+                Your Daily History
+              </h3>
+
+              <p className="mt-1 max-w-xl text-xs leading-5 text-gray-400">
+                Keep track of what you accomplish each day and look back on your progress over time.
+              </p>
+            </div>
+
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-50 text-sm font-bold text-gray-300">
+              →
+            </div>
+
+          </div>
+
+        </section>
 
         {/* Footer */}
         <footer className="mt-8 border-t border-gray-200 py-6 text-center">
-
           <p className="text-xs text-gray-400">
             Todo Post • Simple. Focused. Built for getting things done.
           </p>
-
         </footer>
 
       </div>
-
     </main>
   );
 }
