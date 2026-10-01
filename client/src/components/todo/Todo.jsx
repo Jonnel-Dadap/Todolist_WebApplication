@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Trash2, SquarePen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import TodoNavbar from "@/components/todo/TodoNavbar";
 
 function Todo() {
   const router = useRouter();
@@ -188,56 +189,8 @@ function Todo() {
     <main className="min-h-screen bg-[#F5F6EE] px-4 py-8 text-gray-900 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
 
-        {/* Header */}
-        <header className="mb-10 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm sm:px-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
-            <div className="flex items-center gap-3">
-              <Image
-                src="/todolist logo.png"
-                alt="Todo Post Logo"
-                width={44}
-                height={44}
-                className="h-11 w-11 rounded-full object-contain"
-              />
-
-              <div>
-                <h1 className="text-lg font-bold tracking-tight text-gray-900">
-                  Todo Post
-                </h1>
-
-                <p className="text-xs text-gray-400">
-                  Your daily task workspace
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between gap-4 sm:justify-end">
-              <div className="text-right">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
-                  Today
-                </p>
-
-                <p className="text-sm font-semibold text-gray-700">
-                  {new Date().toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </p>
-              </div>
-
-              <button
-                onClick={logout}
-                className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 active:scale-95"
-              >
-                Logout
-              </button>
-            </div>
-
-          </div>
-        </header>
-
+        {/* Header */}      
+          <TodoNavbar logout={logout} />
         {/* Welcome */}
         <section className="mb-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
