@@ -22,20 +22,20 @@ const createTodo = async (req, res) => {
     }
 };
 
-const getTodos = async (req, res) => { // para sa get ng data inside mongodb
+const getTodos = async (req, res) => {
     try {
+        const today = new Date().toISOString().split("T")[0];
+
         const todos = await Todo.find({
-            user: req.user.userId
-        });
+            user: req.user.userId,
+            date: today
+        }).sort({ createdAt: -1 });
 
-        res.status(200).json(todos);
-
+        res.json(todos);
     } catch (error) {
-        res.status(500).json({
-            message: error.message
-        });
+        res.status(500).json({ message: "Server error" });
     }
-};
+};;
 
 const getTodo = async (req, res) => {
     try {
@@ -60,26 +60,31 @@ const getTodo = async (req, res) => {
 
 const updateTodo = async (req, res) => {
     try {
-        const todo = await Todo.findOneAndUpdate(
-            {
-                _id: req.params.id,
-                user: req.user.userId
-            },
-            req.body,
-            { new: true }
-        );
+        const { title, completed } = req.body;
+
+        const todo = await Todo.findOne({
+            _id: req.params.id,
+            user: req.user.userId
+        });
 
         if (!todo) {
-            return res.status(404).json({
-                message: "Todo not found"
-            });
+            return res.status(404).json({ message: "Todo not found" });
         }
 
-        res.status(200).json(todo);
+        if (title !== undefined) {
+            todo.title = title.trim();
+        }
+
+        if (completed !== undefined) {
+            todo.completed = completed;
+            todo.completedAt = completed ? new Date() : null;
+        }
+
+        await todo.save();
+
+        res.json(todo);
     } catch (error) {
-        res.status(500).json({
-            message: error.message
-        });
+        res.status(500).json({ message: "Server error" });
     }
 };
 const deleteTodo = async (req, res) => {
