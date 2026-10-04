@@ -4,14 +4,21 @@ const createTodo = async (req, res) => {
     try {
         const { title } = req.body;
 
+        if (!title || !title.trim()) {
+            return res.status(400).json({ message: "Title is required" });
+        }
+
+        const today = new Date().toISOString().split("T")[0]; // FOr temporary date and time zone
+
         const todo = await Todo.create({
-            title,
+            title: title.trim(),
+            date: today,
             user: req.user.userId
         });
 
         res.status(201).json(todo);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Server error" });
     }
 };
 
