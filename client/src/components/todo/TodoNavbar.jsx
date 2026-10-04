@@ -6,6 +6,7 @@ import { useState } from "react";
 
 export default function TodoNavbar({ logout }) {
     const [menuOpen, setMenuOpen] = useState(false);
+  
 
     return (
         <header className="mb-8 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm sm:px-5">

@@ -1,5 +1,11 @@
 const Todo = require("../models/Todo");
 
+const getToday = () => {
+    return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Manila"
+    }).format(new Date());
+};
+
 const createTodo = async (req, res) => {
     try {
         const { title } = req.body;
@@ -8,7 +14,7 @@ const createTodo = async (req, res) => {
             return res.status(400).json({ message: "Title is required" });
         }
 
-        const today = new Date().toISOString().split("T")[0]; // FOr temporary date and time zone
+        const today = getToday();
 
         const todo = await Todo.create({
             title: title.trim(),
@@ -24,7 +30,7 @@ const createTodo = async (req, res) => {
 
 const getTodos = async (req, res) => {
     try {
-        const today = new Date().toISOString().split("T")[0];
+        const today = getToday();
 
         const todos = await Todo.find({
             user: req.user.userId,
@@ -35,7 +41,7 @@ const getTodos = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Server error" });
     }
-};;
+};
 
 const getTodo = async (req, res) => {
     try {
