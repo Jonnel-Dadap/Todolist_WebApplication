@@ -152,6 +152,14 @@ const deleteTodo = async (req, res) => {
 };
 const getHistory = async (req, res) => {
     try {
+        const completedTodos = await Todo.find({
+            user: req.user.userId,
+            completed: true
+        });
+
+        console.log("USER:", req.user.userId);
+        console.log("COMPLETED TODOS:", completedTodos);
+
         const history = await Todo.aggregate([
             {
                 $match: {
@@ -183,6 +191,8 @@ const getHistory = async (req, res) => {
 
         res.json(history);
     } catch (error) {
+        console.error(error);
+
         res.status(500).json({
             message: "Server error"
         });
