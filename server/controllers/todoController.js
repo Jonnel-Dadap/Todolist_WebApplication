@@ -5,6 +5,41 @@ const getToday = () => {
         timeZone: "Asia/Manila"
     }).format(new Date());
 };
+const carryOverTodos = async (userId) => {
+    const today = getToday();
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const yesterdayDate = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Manila"
+    }).format(yesterday);
+
+    const unfinishedTodos = await Todo.find({
+        user: userId,
+        date: yesterdayDate,
+        completed: false
+    });
+
+    for (const todo of unfinishedTodos) {
+        const alreadyCarried = await Todo.findOne({
+            user: userId,
+            title: todo.title,
+            date: today,
+            carriedFrom: yesterdayDate
+        });
+
+        if (!alreadyCarried) {
+            await Todo.create({
+                title: todo.title,
+                completed: false,
+                date: today,
+                carriedFrom: yesterdayDate,
+                user: userId
+            });
+        }
+    }
+};
 
 const createTodo = async (req, res) => {
     try {
@@ -31,6 +66,8 @@ const createTodo = async (req, res) => {
 const getTodos = async (req, res) => {
     try {
         const today = getToday();
+
+        await carryOverTodos(req.user.userId);
 
         const todos = await Todo.find({
             user: req.user.userId,
@@ -113,11 +150,49 @@ const deleteTodo = async (req, res) => {
         });
     }
 };
+const getHistory = async (req, res) => {
+    try {
+        const history = await Todo.aggregate([
+            {
+                $match: {
+                    user: req.user.userId,
+                    completed: true,
+                    completedAt: { $ne: null }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: {
+                            format: "%Y-%m-%d",
+                            date: "$completedAt",
+                            timezone: "Asia/Manila"
+                        }
+                    },
+                    completedCount: {
+                        $sum: 1
+                    }
+                }
+            },
+            {
+                $sort: {
+                    _id: 1
+                }
+            }
+        ]);
 
+        res.json(history);
+    } catch (error) {
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
 module.exports = {
     createTodo,
     getTodos,
     getTodo,
     updateTodo,
-    deleteTodo
+    deleteTodo,
+    getHistory
 };

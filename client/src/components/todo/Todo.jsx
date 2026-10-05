@@ -13,7 +13,7 @@ function Todo() {
   const [todos, setTodos] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
-  
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -190,8 +190,8 @@ function Todo() {
     <main className="min-h-screen bg-[#F5F6EE] px-4 py-8 text-gray-900 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
 
-        {/* Header */}      
-          <TodoNavbar logout={logout} />
+        {/* Header */}
+        <TodoNavbar logout={logout} />
         {/* Welcome */}
         <section className="mb-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
@@ -367,14 +367,23 @@ function Todo() {
                     </span>
 
                     {/* Title */}
-                    <span
-                      className={`break-words text-sm transition ${item.completed
-                        ? "text-gray-400 line-through"
-                        : "text-gray-700 group-hover:text-gray-900"
-                        }`}
-                    >
-                      {item.title}
-                    </span>
+                    {/* Title */}
+                    <div className="min-w-0">
+                      <span
+                        className={`break-words text-sm transition ${item.completed
+                            ? "text-gray-400 line-through"
+                            : "text-gray-700 group-hover:text-gray-900"
+                          }`}
+                      >
+                        {item.title}
+                      </span>
+
+                      {item.carriedFrom && (
+                        <p className="mt-1 text-xs font-medium text-[#8A9500]">
+                          Carried over from yesterday
+                        </p>
+                      )}
+                    </div>
 
                   </div>
 
