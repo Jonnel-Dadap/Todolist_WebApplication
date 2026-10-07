@@ -171,7 +171,7 @@ const getHistory = async (req, res) => {
             {
                 $group: {
                     _id: {
-                        $dateToString: {
+                        $dateToString: { // for time
                             format: "%Y-%m-%d",
                             date: "$completedAt",
                             timezone: "Asia/Manila"
