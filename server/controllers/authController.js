@@ -8,7 +8,6 @@ const registerUser = async (req, res) => {
 
     // Check if email already exist
     const existingUser = await User.findOne({ email });
-
     if (existingUser) {
       return res.status(400).json({
         message: "Email already registered"
@@ -17,7 +16,6 @@ const registerUser = async (req, res) => {
 
     // Hashing
     const hashedPassword = await bcrypt.hash(password, 10);
-
     // Create user
     const user = await User.create({
       username,
@@ -41,13 +39,12 @@ const registerUser = async (req, res) => {
       }
     });
 
-  } catch (error) {
+  } catch (error) { // Error message
     res.status(500).json({
       message: error.message
     });
   }
 };
-
 const loginUser = async (req, res) => {
   try {
     // console.log("LOGIN REQUEST RECEIVED");
