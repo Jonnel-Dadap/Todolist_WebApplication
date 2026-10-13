@@ -3,10 +3,11 @@
 import Image from "next/image";
 import { Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function TodoNavbar({ logout }) {
     const [menuOpen, setMenuOpen] = useState(false);
-  
+
 
     return (
         <header className="mb-8 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm sm:px-5">
@@ -41,11 +42,12 @@ export default function TodoNavbar({ logout }) {
                         Today
                     </button>
 
-                    <button
+                    <Link
+                        href="/history"
                         className="rounded-lg px-4 py-2 text-sm font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
                     >
                         History
-                    </button>
+                    </Link>
 
                     <button
                         className="rounded-lg px-4 py-2 text-sm font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
@@ -60,7 +62,7 @@ export default function TodoNavbar({ logout }) {
                         className="group inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all duration-200 hover:border-red-200 hover:bg-red-50/50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/20 active:scale-85"
                     >
                         <LogOut className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
-                        
+
                     </button>
                 </nav>
 
