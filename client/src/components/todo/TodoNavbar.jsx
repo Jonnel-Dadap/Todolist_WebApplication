@@ -36,11 +36,11 @@ export default function TodoNavbar({ logout }) {
 
                 {/* Desktop Navigation */}
                 <nav className="hidden items-center gap-1 md:flex">
-                    <button
+                    <Link href="/todo"
                         className="rounded-lg bg-[#A0AC00]/10 px-4 py-2 text-sm font-medium text-[#8A9500]"
                     >
                         Today
-                    </button>
+                    </Link>
 
                     <Link
                         href="/history"

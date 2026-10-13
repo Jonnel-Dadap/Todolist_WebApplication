@@ -1,20 +1,19 @@
-
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { CheckCircle2, Circle, History, Clock3 } from "lucide-react";
 import TodoNavbar from "@/components/todo/TodoNavbar";
 
-const API_URL = "http://localhost:5000/api/todos/history";
+const API_URL = "http://localhost:5000/api/todos/history/tasks";
 
 export default function HistoryPage() {
   const router = useRouter();
-  const [history, setHistory] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState("");
 
   useEffect(() => {
-    const fetchHistory = async () => {
+    const fetchHistoryTasks = async () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -38,84 +37,42 @@ export default function HistoryPage() {
         }
 
         if (!response.ok) {
-          throw new Error(data.message || "Failed to load history");
+          throw new Error(data.message || "Failed to load task history");
         }
 
-        setHistory(data);
+        setTasks(Array.isArray(data) ? data : []);
       } catch (error) {
-        console.error("Error fetching history:", error);
+        console.error("Error fetching task history:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchHistory();
+    fetchHistoryTasks();
   }, [router]);
 
-  const dailyCounts = useMemo(() => {
-    return Object.fromEntries(
-      history.map((day) => [day._id, day.completedCount])
-    );
-  }, [history]);
-
-  const calendar = useMemo(() => {
-    const today = new Date();
-    const end = new Date(
-      Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
-    );
-    const start = new Date(end);
-    start.setUTCDate(start.getUTCDate() - 363);
-
-    // Start on Sunday so the grid aligns by weekday.
-    start.setUTCDate(start.getUTCDate() - start.getUTCDay());
-
-    const days = [];
-
-    for (
-      const date = new Date(start);
-      date <= end;
-      date.setUTCDate(date.getUTCDate() + 1)
-    ) {
-      const key = [
-        date.getUTCFullYear(),
-        String(date.getUTCMonth() + 1).padStart(2, "0"),
-        String(date.getUTCDate()).padStart(2, "0"),
-      ].join("-");
-
-      days.push({
-        date: key,
-        count: dailyCounts[key] || 0,
-      });
+  const groupedTasks = tasks.reduce((groups, task) => {
+    if (!groups[task.date]) {
+      groups[task.date] = [];
     }
 
-    return days;
-  }, [dailyCounts]);
+    groups[task.date].push(task);
+    return groups;
+  }, {});
 
-  const totalCompleted = history.reduce(
-    (total, day) => total + day.completedCount,
-    0
+  const dates = Object.keys(groupedTasks).sort((a, b) =>
+    b.localeCompare(a)
   );
 
-  const activeDays = history.filter(
-    (day) => day.completedCount > 0
-  ).length;
-
-  const selectedDay = calendar.find(
-    (day) => day.date === selectedDate
-  );
-
-  const getIntensity = (count) => {
-    if (count === 0) return "bg-gray-100";
-    if (count === 1) return "bg-[#DDE3A3]";
-    if (count <= 3) return "bg-[#BFC96A]";
-    if (count <= 5) return "bg-[#A0AC00]";
-    return "bg-[#687300]";
-  };
+  const completedCount = tasks.filter((task) => task.completed).length;
+  const unfinishedCount = tasks.length - completedCount;
 
   const formatDate = (dateString) => {
     return new Date(`${dateString}T12:00:00`).toLocaleDateString(
-      "en-US",
+      "en-PH",
       {
+        timeZone: "Asia/Manila",
+        weekday: "long",
         month: "long",
         day: "numeric",
         year: "numeric",
@@ -125,155 +82,153 @@ export default function HistoryPage() {
 
   return (
     <main className="min-h-screen bg-[#F5F6EE] px-4 py-6 sm:px-6 sm:py-8">
-      <div className="mx-auto max-w-6xl">
-        <TodoNavbar logout={() => {
-          localStorage.removeItem("token");
-          router.push("/login");
-        }} />
+      <div className="mx-auto max-w-5xl">
+        <TodoNavbar
+          logout={() => {
+            localStorage.removeItem("token");
+            router.push("/login");
+          }}
+        />
 
-        <div className="mb-8">
+        <div className="mb-8 mt-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8A9500]">
-            Your Progress
+            Your Records
           </p>
+
           <h1 className="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-            Activity History
+            Task History
           </h1>
+
           <p className="mt-2 text-sm text-gray-500">
-            Every completed task is a step forward. Keep showing up.
+            Review your previous tasks and see what you accomplished each day.
           </p>
         </div>
 
-        {loading ? (
-          <div className="rounded-xl border border-gray-200 bg-white p-8 text-sm text-gray-400">
-            Loading your activity...
+        <div className="mb-6 grid grid-cols-2 gap-4">
+          <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <CheckCircle2 size={17} className="text-[#8A9500]" />
+              Completed
+            </div>
+            <p className="mt-3 text-3xl font-bold text-gray-900">
+              {completedCount}
+            </p>
           </div>
-        ) : (
-          <>
-            <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-              <div className="rounded-xl border border-gray-200 bg-white p-5">
-                <p className="text-sm text-gray-500">Tasks completed</p>
-                <p className="mt-2 text-3xl font-bold text-gray-900">
-                  {totalCompleted}
-                </p>
-              </div>
 
-              <div className="rounded-xl border border-gray-200 bg-white p-5">
-                <p className="text-sm text-gray-500">Active days</p>
-                <p className="mt-2 text-3xl font-bold text-gray-900">
-                  {activeDays}
-                </p>
-              </div>
+          <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <Clock3 size={17} className="text-gray-400" />
+              Unfinished
+            </div>
+            <p className="mt-3 text-3xl font-bold text-gray-900">
+              {unfinishedCount}
+            </p>
+          </div>
+        </div>
 
-              <div className="col-span-2 rounded-xl border border-gray-200 bg-white p-5 sm:col-span-1">
-                <p className="text-sm text-gray-500">Tracking period</p>
-                <p className="mt-2 text-3xl font-bold text-gray-900">
-                  1 year
-                </p>
-              </div>
+        <section className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F0F2D8] text-[#8A9500]">
+              <History size={20} />
             </div>
 
-            <section className="rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
-              <div className="mb-6">
-                <h2 className="text-base font-semibold text-gray-900">
-                  Daily contributions
-                </h2>
-                <p className="mt-1 text-sm text-gray-500">
-                  Select a square to see your activity for that day.
-                </p>
-              </div>
-
-              <div className="overflow-x-auto pb-3">
-                <div className="min-w-[720px]">
-                  <div className="mb-2 grid grid-cols-[32px_1fr] gap-2">
-                    <div />
-                    <div className="grid grid-cols-12 text-xs text-gray-400">
-                      {Array.from({ length: 12 }, (_, index) => (
-                        <span key={index}>
-                          {new Date(
-                            Date.UTC(2026, index, 1)
-                          ).toLocaleDateString("en-US", {
-                            month: "short",
-                            timeZone: "UTC",
-                          })}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-[32px_1fr] gap-2">
-                    <div className="grid grid-rows-7 gap-1 text-[10px] text-gray-400">
-                      <span>Sun</span>
-                      <span>Mon</span>
-                      <span>Tue</span>
-                      <span>Wed</span>
-                      <span>Thu</span>
-                      <span>Fri</span>
-                      <span>Sat</span>
-                    </div>
-
-                    <div className="grid grid-flow-col grid-rows-7 gap-1">
-                      {calendar.map((day) => (
-                        <button
-                          key={day.date}
-                          type="button"
-                          title={`${day.date}: ${day.count} completed`}
-                          aria-label={`${formatDate(day.date)}: ${day.count} tasks completed`}
-                          onClick={() => setSelectedDate(day.date)}
-                          className={`h-3 w-3 rounded-[3px] transition hover:ring-2 hover:ring-[#8A9500] focus:outline-none focus:ring-2 focus:ring-[#8A9500] ${getIntensity(
-                            day.count
-                          )} ${
-                            selectedDate === day.date
-                              ? "ring-2 ring-gray-900"
-                              : ""
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                <p className="text-xs text-gray-400">
-                  {activeDays} days with completed tasks
-                </p>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500">Less</span>
-                  {[0, 1, 2, 4, 6].map((count) => (
-                    <span
-                      key={count}
-                      className={`h-3 w-3 rounded-[3px] ${getIntensity(count)}`}
-                    />
-                  ))}
-                  <span className="text-xs text-gray-500">More</span>
-                </div>
-              </div>
-            </section>
-
-            <section className="mt-6 rounded-xl border border-gray-200 bg-white p-5 sm:p-6">
-              <h2 className="text-base font-semibold text-gray-900">
-                {selectedDay
-                  ? formatDate(selectedDay.date)
-                  : "Daily details"}
+            <div>
+              <h2 className="font-semibold text-gray-900">
+                Previous Days
               </h2>
+              <p className="mt-1 text-sm text-gray-500">
+                {tasks.length} {tasks.length === 1 ? "task" : "tasks"} recorded
+              </p>
+            </div>
+          </div>
 
-              {selectedDay ? (
-                <p className="mt-2 text-sm text-gray-600">
-                  {selectedDay.count === 0
-                    ? "No tasks completed on this day."
-                    : `${selectedDay.count} ${
-                        selectedDay.count === 1 ? "task" : "tasks"
-                      } completed.`}
-                </p>
-              ) : (
-                <p className="mt-2 text-sm text-gray-500">
-                  Select any square in the graph to view that day's completed task count.
-                </p>
-              )}
-            </section>
-          </>
-        )}
+          {loading ? (
+            <div className="py-12 text-center text-sm text-gray-400">
+              Loading your task history...
+            </div>
+          ) : tasks.length === 0 ? (
+            <div className="py-12 text-center">
+              <History size={32} className="mx-auto text-gray-300" />
+
+              <h3 className="mt-4 font-semibold text-gray-800">
+                No previous tasks yet
+              </h3>
+
+              <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-gray-500">
+                Tasks from previous days will appear here once you start
+                building your daily routine.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-8">
+              {dates.map((date) => (
+                <div key={date}>
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <h3 className="text-sm font-semibold text-gray-800">
+                      {formatDate(date)}
+                    </h3>
+
+                    <span className="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
+                      {groupedTasks[date].length}{" "}
+                      {groupedTasks[date].length === 1 ? "task" : "tasks"}
+                    </span>
+                  </div>
+
+                  <div className="space-y-2">
+                    {groupedTasks[date].map((task) => (
+                      <div
+                        key={task._id}
+                        className="flex items-start gap-3 rounded-lg border border-gray-100 bg-gray-50/70 p-4"
+                      >
+                        <div className="mt-0.5 shrink-0">
+                          {task.completed ? (
+                            <CheckCircle2
+                              size={19}
+                              className="text-[#8A9500]"
+                            />
+                          ) : (
+                            <Circle
+                              size={19}
+                              className="text-gray-300"
+                            />
+                          )}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <p
+                            className={`break-words text-sm font-medium ${
+                              task.completed
+                                ? "text-gray-400 line-through"
+                                : "text-gray-800"
+                            }`}
+                          >
+                            {task.title}
+                          </p>
+
+                          {task.carriedFrom && (
+                            <p className="mt-1 text-xs font-medium text-[#8A9500]">
+                              Carried over from a previous day
+                            </p>
+                          )}
+                        </div>
+
+                        <span
+                          className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${
+                            task.completed
+                              ? "bg-[#F0F2D8] text-[#687300]"
+                              : "bg-gray-200 text-gray-600"
+                          }`}
+                        >
+                          {task.completed ? "Completed" : "Unfinished"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </main>
   );

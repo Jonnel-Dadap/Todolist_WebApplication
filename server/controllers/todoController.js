@@ -198,11 +198,32 @@ const getHistory = async (req, res) => {
         });
     }
 };
+
+const getHistoryTasks = async (req, res) => {
+    try {
+        const today = getToday();
+
+        const tasks = await Todo.find({
+            user: req.user.userId,
+            date: { $lt: today }
+        }).sort({ date: -1, createdAt: -1 });
+
+        res.json(tasks);
+    } catch (error) {
+        console.error("History tasks error:", error);
+
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
+
 module.exports = {
     createTodo,
     getTodos,
     getTodo,
     updateTodo,
     deleteTodo,
-    getHistory
+    getHistory,
+    getHistoryTasks
 };

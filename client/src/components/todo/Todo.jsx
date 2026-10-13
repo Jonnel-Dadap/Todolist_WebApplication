@@ -437,7 +437,7 @@ function Todo() {
           </section>
 
           {/* Today's Progress */}
-          <aside className="h-fit rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <aside className="h-full rounded-2xl border border-gray-200 bg-white p-6 pb-10 shadow-sm">
 
             <div className="mb-6">
 
@@ -517,32 +517,7 @@ function Todo() {
 
         </div>
 
-        {/* Future Daily History Placeholder */}
-        <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                Coming Next
-              </p>
-
-              <h3 className="mt-1 text-lg font-semibold text-gray-900">
-                Your Daily History
-              </h3>
-
-              <p className="mt-1 max-w-xl text-xs leading-5 text-gray-400">
-                Keep track of what you accomplish each day and look back on your progress over time.
-              </p>
-            </div>
-
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-50 text-sm font-bold text-gray-300">
-              →
-            </div>
-
-          </div>
-
-        </section>
+        
 
         {/* Footer */}
         <footer className="mt-8 border-t border-gray-200 py-6 text-center">
