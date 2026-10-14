@@ -1,4 +1,5 @@
 const Todo = require("../models/Todo");
+const mongoose = require("mongoose");
 
 const getToday = () => {
     return new Intl.DateTimeFormat("en-CA", {
@@ -150,20 +151,15 @@ const deleteTodo = async (req, res) => {
         });
     }
 };
+
 const getHistory = async (req, res) => {
     try {
-        const completedTodos = await Todo.find({
-            user: req.user.userId,
-            completed: true
-        });
-
-        console.log("USER:", req.user.userId);
-        console.log("COMPLETED TODOS:", completedTodos);
+        const userId = new mongoose.Types.ObjectId(req.user.userId);
 
         const history = await Todo.aggregate([
             {
                 $match: {
-                    user: req.user.userId,
+                    user: userId,
                     completed: true,
                     completedAt: { $ne: null }
                 }
@@ -183,21 +179,20 @@ const getHistory = async (req, res) => {
                 }
             },
             {
-                $sort: {
-                    _id: 1
-                }
+                $sort: { _id: 1 }
             }
         ]);
 
         res.json(history);
     } catch (error) {
-        console.error(error);
+        console.error("History error:", error);
 
         res.status(500).json({
             message: "Server error"
         });
     }
 };
+
 
 const getHistoryTasks = async (req, res) => {
     try {

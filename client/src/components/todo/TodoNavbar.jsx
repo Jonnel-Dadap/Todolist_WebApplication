@@ -49,11 +49,12 @@ export default function TodoNavbar({ logout }) {
                         History
                     </Link>
 
-                    <button
+                    <Link
+                      href="/profile"
                         className="rounded-lg px-4 py-2 text-sm font-medium text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
                     >
                         Profile
-                    </button>
+                    </Link>
 
                     <div className="mx-2 h-6 w-px bg-gray-200" />
 
