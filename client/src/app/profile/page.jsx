@@ -16,6 +16,15 @@ import TodoNavbar from "@/components/todo/TodoNavbar";
 const PROFILE_URL = "http://localhost:5000/api/auth/profile";
 const HISTORY_URL = "http://localhost:5000/api/todos/history";
 
+const getCircleColor = (count) => {
+    if (count === 0) return "#E8EAE0";
+    if (count === 1) return "#DDE3A3";
+    if (count <= 3) return "#BFC96A";
+    if (count <= 5) return "#8F9C16";
+    return "#687300";
+};
+
+
 const getManilaDateKey = (date = new Date()) => {
     const parts = new Intl.DateTimeFormat("en-US", {
         timeZone: "Asia/Manila",
@@ -348,117 +357,161 @@ export default function ProfilePage() {
 
                         {/* Activity Graph */}
 
+
                         {/* Daily Momentum */}
                         <section className="mt-6 rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
-                            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
                                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8A9500]">
                                         Your consistency
                                     </p>
-                                    <h2 className="mt-2 text-xl font-bold tracking-tight text-gray-900">
+                                    <h2 className="mt-2 text-lg font-bold text-gray-900">
                                         Daily Momentum
                                     </h2>
                                     <p className="mt-1 text-sm text-gray-500">
-                                        A year of small steps and completed tasks.
+                                        Every small step adds up.
                                     </p>
                                 </div>
 
-                                <div className="rounded-lg bg-[#F5F6EE] px-4 py-3">
-                                    <p className="text-xs text-gray-500">Days you made progress</p>
-                                    <p className="mt-1 text-xl font-bold text-[#687300]">
+                                <div className="flex items-center gap-3 rounded-xl bg-[#F5F6EE] px-4 py-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-[#A0AC00] text-xs font-bold text-[#687300]">
                                         {activeDays}
-                                        <span className="ml-1 text-xs font-medium text-gray-400">
-                                            days
-                                        </span>
-                                    </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-semibold text-gray-800">
+                                            Active days
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                            In recorded history
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                                {monthlyActivity.map((month) => {
-                                    const firstDay = new Date(
-                                        `${month.key}-01T00:00:00Z`
-                                    ).getUTCDay();
+                            {/* Activity Graph */}
+                            <div className="mt-7 overflow-x-auto pb-3">
+                                <div className="min-w-[760px]">
+                                    {/* Month labels */}
+                                    <div className="mb-3 grid grid-cols-[38px_1fr] gap-2">
+                                        <div />
 
-                                    return (
-                                        <div
-                                            key={month.key}
-                                            className="rounded-xl border border-gray-100 bg-[#FAFAF6] p-4"
-                                        >
-                                            <div className="mb-4 flex items-center justify-between">
-                                                <h3 className="text-sm font-semibold text-gray-800">
-                                                    {month.label}
-                                                </h3>
-                                                <span className="text-xs text-gray-400">
-                                                    {month.days.reduce((sum, day) => sum + day.count, 0)} done
-                                                </span>
-                                            </div>
+                                        <div className="flex gap-1">
+                                            {weeks.map((week, index) => {
+                                                const firstOfMonth = week.find(
+                                                    (day) => day.dayOfMonth === 1
+                                                );
 
-                                            <div className="mb-2 grid grid-cols-7 gap-y-2 text-center">
-                                                {["S", "M", "T", "W", "T", "F", "S"].map(
-                                                    (label, index) => (
-                                                        <span
-                                                            key={`${label}-${index}`}
-                                                            className="text-[10px] font-medium text-gray-400"
-                                                        >
-                                                            {label}
-                                                        </span>
-                                                    )
-                                                )}
-                                            </div>
-
-                                            <div className="grid grid-cols-7 justify-items-center gap-y-2">
-                                                {Array.from({ length: firstDay }).map((_, index) => (
-                                                    <span key={`empty-${index}`} className="h-7 w-7" />
-                                                ))}
-
-                                                {month.days.map((day) => (
-                                                    <button
-                                                        key={day.date}
-                                                        type="button"
-                                                        title={`${day.date}: ${day.count} tasks completed`}
-                                                        aria-label={`${formatDay(day.date)}: ${day.count} tasks completed`}
-                                                        onClick={() => setSelectedDate(day.date)}
-                                                        className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-medium transition ${day.count === 0
-                                                                ? "bg-gray-100 text-gray-500"
-                                                                : day.count === 1
-                                                                    ? "bg-[#E6EABF] text-[#687300]"
-                                                                    : day.count <= 3
-                                                                        ? "bg-[#C8D27A] text-[#465000]"
-                                                                        : day.count <= 5
-                                                                            ? "bg-[#A0AC00] text-white"
-                                                                            : "bg-[#687300] text-white"
-                                                            } ${selectedDate === day.date
-                                                                ? "ring-2 ring-gray-900 ring-offset-1"
-                                                                : "hover:ring-2 hover:ring-[#A0AC00] hover:ring-offset-1"
-                                                            }`}
+                                                return (
+                                                    <div
+                                                        key={index}
+                                                        className="w-3 shrink-0 text-[10px] font-medium text-gray-400"
                                                     >
-                                                        {day.dayOfMonth}
-                                                    </button>
-                                                ))}
-                                            </div>
+                                                        {firstOfMonth ? firstOfMonth.month : ""}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
-                                    );
-                                })}
+                                    </div>
+
+                                    {/* Weekday labels + circular activity graph */}
+                                    <div className="grid grid-cols-[38px_1fr] gap-2">
+                                        <div className="grid grid-rows-7 gap-y-[7px] text-[10px] text-gray-400">
+                                            <span>Sun</span>
+                                            <span>Mon</span>
+                                            <span>Tue</span>
+                                            <span>Wed</span>
+                                            <span>Thu</span>
+                                            <span>Fri</span>
+                                            <span>Sat</span>
+                                        </div>
+
+                                        <div className="flex gap-1">
+                                            {weeks.map((week, weekIndex) => (
+                                                <div key={weekIndex} className="flex flex-col gap-y-[7px]">
+                                                    {week.map((day, dayIndex) => (
+                                                        <div
+                                                            key={day.date}
+                                                            className="relative flex h-3 w-3 items-center justify-center"
+                                                        >
+                                                            {/* Connecting line to the next day in this week */}
+                                                            {dayIndex < week.length - 1 && (
+                                                                <span
+                                                                    className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[7px] w-px -translate-x-1/2"
+                                                                    style={{ backgroundColor: "#E5E7D9" }}
+                                                                />
+                                                            )}
+
+                                                            {/* Daily activity circle */}
+                                                            <button
+                                                                type="button"
+                                                                title={`${day.date}: ${day.count} tasks completed`}
+                                                                aria-label={`${formatDay(day.date)}: ${day.count} tasks completed`}
+                                                                onClick={() => setSelectedDate(day.date)}
+                                                                className={`relative z-10 h-[10px] w-[10px] rounded-full transition-all duration-150 hover:scale-150 focus:outline-none focus:ring-2 focus:ring-[#8A9500] focus:ring-offset-2 ${selectedDate === day.date
+                                                                        ? "scale-125 ring-2 ring-gray-900 ring-offset-2"
+                                                                        : ""
+                                                                    }`}
+                                                                style={{
+                                                                    backgroundColor: getCircleColor(day.count),
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4">
+                            {/* Legend */}
+                            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4">
                                 <p className="text-xs text-gray-400">
-                                    Select any date to review your progress.
+                                    Select a circle to explore your daily progress.
                                 </p>
 
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs text-gray-500">Less</span>
+                                    <span className="text-xs text-gray-500">Rest</span>
                                     {[0, 1, 2, 4, 6].map((count) => (
                                         <span
                                             key={count}
-                                            className={`h-3 w-3 rounded-full ${getIntensity(count)}`}
+                                            className="h-3 w-3 rounded-full"
+                                            style={{ backgroundColor: getCircleColor(count) }}
                                         />
                                     ))}
-                                    <span className="text-xs text-gray-500">More</span>
+                                    <span className="text-xs text-gray-500">In motion</span>
                                 </div>
                             </div>
                         </section>
+
+                        {/* Selected Day Details */}
+                        <section className="mt-6 rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+                            <div className="flex items-start justify-between gap-4">
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#8A9500]">
+                                        Daily record
+                                    </p>
+
+                                    <h2 className="mt-2 text-base font-semibold text-gray-900">
+                                        {selectedDay ? formatDay(selectedDay.date) : "Explore your progress"}
+                                    </h2>
+
+                                    <p className="mt-2 text-sm text-gray-500">
+                                        {selectedDay
+                                            ? selectedDay.count === 0
+                                                ? "A fresh opportunity to make progress."
+                                                : `${selectedDay.count} ${selectedDay.count === 1 ? "task" : "tasks"
+                                                } completed on this day.`
+                                            : "Select a circle above to see your activity."}
+                                    </p>
+                                </div>
+
+                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F0F2D8] text-[#687300]">
+                                    <CheckCircle2 size={21} />
+                                </div>
+                            </div>
+                        </section>
+
 
                     </>
                 )}
