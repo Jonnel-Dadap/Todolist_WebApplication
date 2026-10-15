@@ -82,7 +82,7 @@ export default function HistoryPage() {
 
   return (
     <main className="min-h-screen bg-[#F5F6EE] px-4 py-6 sm:px-6 sm:py-8">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <TodoNavbar
           logout={() => {
             localStorage.removeItem("token");
